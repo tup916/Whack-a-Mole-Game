@@ -6,6 +6,8 @@ var bunsCurLocation = 0;
 var bunsLocX; 
 var bunsLocY;
 var locations = [];
+var molesSpots = [5, 7, 2, 3, 5,2, 1, 6, 8, 1, 0, 2, 5, 1, 3, 8, 4, 6, 1, 0, 3, 1];
+var i = 0;
 var mouseIsClicked = false;
 var intervalID;
 var intervalTime = 1500;
@@ -48,7 +50,7 @@ function setup() {
 	
   var c = createCanvas(windowWidth, windowHeight);
   setBackground();
-  
+  bunsCurLocation = molesSpots[i];
   bunsLocX = locations[bunsCurLocation].x - 20;
   bunsLocY = locations[bunsCurLocation].y - 40;
   noLoop();
@@ -57,6 +59,7 @@ function setup() {
 }
 
 function setBackground(){
+	imgThere = false;
 	clear();
 	background(150, 200, 130);
 	ellipse( locations[0].x, locations[0].y, 40, 30);
@@ -93,8 +96,7 @@ function mouseClicked(){
 		
 	if (imgThere && (mouseX >= bunsLocX) && (mouseX <= bunsLocX +imgWidth) && 
 			(mouseY >= bunsLocY) && (mouseY <= imgHeight+ bunsLocY)){
-		bunsCurLocation = (bunsCurLocation+1)%9;
-		console.log(mouseX + "   " + mouseY);
+		bunsCurLocation = molesSpots[(++i)%molesSpots.length];
 		clearInterval(intervalID);
 		intervalID = setInterval(move, intervalTime);
 		
@@ -109,10 +111,10 @@ function mouseClicked(){
 	
 }
 
+
 function move() {
 		imgThere = false;
-		//setBackground();
 		redraw();
 		
-		window.setTimeout(setBackground, intervalTime/2);
+		window.setTimeout(setBackground, intervalTime*0.666);
 }
