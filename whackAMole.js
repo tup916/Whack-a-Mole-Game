@@ -5,29 +5,55 @@ var imgThere = false;
 var bunsCurLocation = 0;
 var bunsLocX; 
 var bunsLocY;
-var locations = [
-    { x:140,y: 130 },
-    { x:140, y: 230 },
-    { x:140, y: 330}, 
-	{ x:240, y:130 },
-    { x:240, y:230}, 
-	{ x:240, y:330 },
-    { x:340, y:130}, 
-	{ x:340, y:230 },
-    { x:340, y:330}
-];
-
+var locations = [];
+var mouseIsClicked = false;
+var intervalID;
+var intervalTime = 1500;
 function preload() {
   img = loadImage("rabbit.jpg");
 }
 
+function windowResized(){
+	  locations = [
+    { x:(windowWidth/4), y: windowHeight/4 },
+    { x:windowWidth/4, y: windowHeight/2 },
+    { x:windowWidth/4, y: windowHeight*0.75}, 
+	{ x:windowWidth/2, y:windowHeight/4 },
+    { x:windowWidth/2, y:windowHeight/2}, 
+	{ x:windowWidth/2, y:windowHeight*0.75 },
+    { x:windowWidth*0.75, y:windowHeight/4}, 
+	{ x:windowWidth*0.75, y:windowHeight/2 },
+    { x:windowWidth*0.75, y:windowHeight*0.75}
+];
+resizeCanvas(windowWidth, windowHeight);
+setBackground();
+if (imgThere){
+	imgThere = false;
+	redraw();
+}
+	
+}
 function setup() {
+  locations = [
+    { x:(windowWidth/4), y: windowHeight/4 },
+    { x:windowWidth/4, y: windowHeight/2 },
+    { x:windowWidth/4, y: windowHeight*0.75}, 
+	{ x:windowWidth/2, y:windowHeight/4 },
+    { x:windowWidth/2, y:windowHeight/2}, 
+	{ x:windowWidth/2, y:windowHeight*0.75 },
+    { x:windowWidth*0.75, y:windowHeight/4}, 
+	{ x:windowWidth*0.75, y:windowHeight/2 },
+    { x:windowWidth*0.75, y:windowHeight*0.75}
+];
+	
   var c = createCanvas(windowWidth, windowHeight);
   setBackground();
   
   bunsLocX = locations[bunsCurLocation].x - 20;
   bunsLocY = locations[bunsCurLocation].y - 40;
   noLoop();
+  
+  intervalID = setInterval(move, intervalTime);
 }
 
 function setBackground(){
@@ -43,56 +69,50 @@ function setBackground(){
 	ellipse( locations[7].x, locations[7].y, 40, 30);
 	ellipse( locations[8].x, locations[8].y, 40, 30);
 }
-function defaultSetup(){
-	
-	var g = createCanvas(windowWidth, windowHeight);
-	background(150, 200, 130);
-	redraw();
-}
+
 
 function draw() {
-
-    
-  
+	//mouseIsClicked = false;
+   bunsLocX = locations[bunsCurLocation].x - 20;
+   bunsLocY = locations[bunsCurLocation].y - 40;
 	if (!imgThere){
 		image(img, bunsLocX, bunsLocY, imgWidth , imgHeight);
 		imgThere = true;
 	}
 	else{
-		//window.setTimeout(makeDisappearAgain(), 3000);
-		//imgThere = false;
-	}
-	
 		
-	
+	}
 }
 
 
 function mouseClicked(){
+	//mouseIsClicked = true;
+	//console.log(mouseX + "   " + mouseY);
+	console.log("here");
+	//setBackground();
+		
 	if (imgThere && (mouseX >= bunsLocX) && (mouseX <= bunsLocX +imgWidth) && 
 			(mouseY >= bunsLocY) && (mouseY <= imgHeight+ bunsLocY)){
 		bunsCurLocation = (bunsCurLocation+1)%9;
-		bunsLocX = locations[bunsCurLocation].x - 20;
-		bunsLocY = locations[bunsCurLocation].y - 40;
-		setBackground();
-		imgThere = false;
-		window.setTimeout(redraw, 2000);
+		console.log(mouseX + "   " + mouseY);
+		clearInterval(intervalID);
+		intervalID = setInterval(move, intervalTime);
 		
-		
-		//defaultSetup();
-		
+	}
+	else if(mouseX < 0 || mouseY < 0 || mouseX > windowWidth || mouseY > windowHeight  ){
+		//do nothing
 	}
 	else if (imgThere && !((mouseX >= bunsLocX) && (mouseX <= bunsLocX +imgWidth) && 
 			(mouseY >= bunsLocY) && (mouseY <= imgHeight+ bunsLocY)) ){
-		setBackground();
-		imgThere = false;
-		window.setTimeout(redraw, 2000);
+		//
 	}
 	
 }
 
-function makeDisappearAgain(){
-	draw();
-	imgThere = false;
-	
+function move() {
+		imgThere = false;
+		//setBackground();
+		redraw();
+		
+		window.setTimeout(setBackground, intervalTime/2);
 }
